@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QQFrevo - Busca de Eventos</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🔎 QQFrevo</h1>
+      <nav class="nav">
+        <a href="/" class="nav-link active">🏠 Início</a>
+        <a href="/favoritos" class="nav-link">⭐ Favoritos</a>
+      </nav>
+    </header>
+
+    <main class="main">
+      <div class="search-form">
+        <h1>🎵 Encontre os Melhores Eventos!</h1>
+        <form method="POST" action="/buscar">
+          <div class="form-group">
+            <label for="cidade">🏙️ Cidade:</label>
+            <input 
+              type="text" 
+              id="cidade" 
+              name="cidade" 
+              placeholder="Ex: São Paulo, Rio de Janeiro..." 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="tipo">🎪 Tipo de evento:</label>
+            <input 
+              type="text" 
+              id="tipo" 
+              name="tipo" 
+              placeholder="Ex: baile funk, desande, som automotivo, frevo..." 
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            🔍 Pesquisar Eventos
+          </button>
+        </form>
+      </div>
+
+      <div style="text-align: center; margin-top: 30px;">
+        <a href="/favoritos" class="btn btn-secondary">
+          ⭐ Ver Meus Favoritos
+        </a>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2024 QQFrevo - Encontre os melhores eventos da sua cidade!</p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Adicionar efeito de fade-in
+      const elements = document.querySelectorAll('.search-form, .header');
+      elements.forEach((el, index) => {
+        el.style.animationDelay = (index * 0.2) + 's';
+        el.classList.add('fade-in');
+      });
+
+      // Foco automático no primeiro input
+      document.getElementById('cidade').focus();
+
+      // Sugestões de cidades populares
+      const cidadeInput = document.getElementById('cidade');
+      const cidades = ['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Salvador', 'Brasília', 'Fortaleza', 'Recife', 'Porto Alegre', 'Manaus', 'Curitiba'];
+      
+      // Sugestões de tipos de eventos
+      const tipoInput = document.getElementById('tipo');
+      const tipos = ['baile funk', 'desande', 'som automotivo', 'frevo', 'pagode', 'sertanejo', 'eletrônica', 'rap', 'rock', 'samba'];
+
+      function adicionarSugestoes(input, sugestoes) {
+        input.addEventListener('input', function() {
+          const valor = this.value.toLowerCase();
+          if (valor.length > 0) {
+            const sugestao = sugestoes.find(s => s.toLowerCase().startsWith(valor));
+            if (sugestao && sugestao.toLowerCase() !== valor) {
+              const inicio = this.selectionStart;
+              this.value = sugestao;
+              this.setSelectionRange(inicio, sugestao.length);
+            }
+          }
+        });
+      }
+
+      adicionarSugestoes(cidadeInput, cidades);
+      adicionarSugestoes(tipoInput, tipos);
+    });
+  </script>
+</body>
+</html>
