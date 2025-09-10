@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QQFrevo - Buscador de Eventos</title>
+  <link rel="icon" type="image/png" href="/logo">
+  <link rel="shortcut icon" type="image/png" href="/logo">
+  <link rel="apple-touch-icon" href="/logo">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Controle de música */
+    .music-control {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid rgba(0, 255, 0, 0.3);
+      border-radius: 15px;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
+      animation: slideInRight 0.5s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .music-control:hover {
+      border-color: #FFD700;
+      box-shadow: 0 5px 30px rgba(255, 215, 0, 0.4);
+    }
+
+    .music-control button {
+      background: none;
+      border: none;
+      color: #00FF00;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .music-control button:hover {
+      color: #FFD700;
+      transform: scale(1.2);
+    }
+
+    .music-control input[type="range"] {
+      width: 100px;
+      height: 4px;
+      background: rgba(0, 255, 0, 0.2);
+      outline: none;
+      -webkit-appearance: none;
+      border-radius: 2px;
+    }
+
+    .music-control input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      background: #FFD700;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .music-control input[type="range"]::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      background: #FFD700;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+
+    .volume-label {
+      color: #FFD700;
+      font-size: 0.8rem;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000000;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #ffffff;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(0, 255, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .header {
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem;
+      box-shadow: 0 4px 30px rgba(255, 215, 0, 0.2);
+      border-bottom: 2px solid rgba(0, 255, 0, 0.3);
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: #00FF00;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 215, 0, 0.1);
+      transition: left 0.3s;
+    }
+
+    .nav-links a:hover::before {
+      left: 0;
+    }
+
+    .nav-links a:hover {
+      transform: translateY(-2px);
+      text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+      border-color: #FFD700;
+      color: #FFD700;
+    }
+
+    .main-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 5;
+    }
+
+    .search-wrapper {
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .logo-container {
+      text-align: center;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .logo-container img {
+      height: 150px;
+      width: auto;
+      filter: drop-shadow(0 0 30px rgba(0, 255, 0, 0.6));
+      animation: beatPulse 0.6s ease-in-out infinite;
+      transform-origin: center center;
+    }
+
+    @keyframes beatPulse {
+      0% { 
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.4));
+      }
+      15% { 
+        transform: scale(1.15) rotate(-2deg);
+        filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.9));
+      }
+      30% { 
+        transform: scale(0.95) rotate(1deg);
+        filter: drop-shadow(0 0 25px rgba(0, 255, 0, 0.5));
+      }
+      45% { 
+        transform: scale(1.1) rotate(-1deg);
+        filter: drop-shadow(0 0 35px rgba(255, 215, 0, 0.7));
+      }
+      60% { 
+        transform: scale(0.98) rotate(0deg);
+        filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.4));
+      }
+      75% { 
+        transform: scale(1.05) rotate(1deg);
+        filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
+      }
+      100% { 
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.4));
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .search-card {
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+                  0 0 100px rgba(255, 215, 0, 0.1);
+      border: 2px solid rgba(0, 255, 0, 0.3);
+      animation: slideUp 0.5s ease-out 0.3s both, glow 3s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .search-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.03) 0%, transparent 70%);
+      animation: rotate 10s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+                    0 0 40px rgba(255, 215, 0, 0.2),
+                    0 0 80px rgba(0, 255, 0, 0.1);
+      }
+      50% {
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8),
+                    0 0 60px rgba(255, 215, 0, 0.3),
+                    0 0 100px rgba(0, 255, 0, 0.2);
+      }
+    }
+
+    .search-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .search-title h2 {
+      font-size: 1.8rem;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    .search-title p {
+      color: #8892b0;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #FFD700;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .input-wrapper {
+      position: relative;
+      z-index: 100;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      padding: 1.2rem 1.5rem;
+      background: rgba(0, 0, 0, 0.8);
+      border: 3px solid rgba(0, 255, 0, 0.4);
+      border-radius: 15px;
+      color: #ffffff;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    .input-wrapper input:focus {
+      border-color: #00FF00;
+      background: rgba(0, 0, 0, 0.95);
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.4),
+                  inset 0 0 20px rgba(255, 215, 0, 0.05);
+      transform: scale(1.02);
+    }
+
+    .input-wrapper input::placeholder {
+      color: #565e7a;
+      font-size: 1rem;
+    }
+
+    .cep-search {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+
+    .cep-input {
+      flex: 1;
+    }
+
+    .cep-button {
+      padding: 1.2rem 1.5rem;
+      background: linear-gradient(135deg, #FFD700, #00FF00);
+      border: none;
+      border-radius: 15px;
+      color: #000000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .cep-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+      background: linear-gradient(135deg, #00FF00, #FFD700);
+    }
+
+    .cep-button:active {
+      transform: translateY(0);
+    }
+
+    /* Modal de sugestões */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      z-index: 9998;
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .suggestions-modal {
+      background: #000000;
+      border: 3px solid rgba(0, 255, 0, 0.6);
+      border-radius: 20px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 70vh;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9),
+                  0 0 100px rgba(0, 255, 0, 0.4);
+      animation: slideUp 0.3s ease-out;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(255, 215, 0, 0.1));
+      border-bottom: 2px solid rgba(0, 255, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      color: #FFD700;
+      font-size: 1.2rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      color: #00FF00;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .close-modal:hover {
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff3333;
+      transform: rotate(90deg);
+    }
+
+    .suggestions {
+      overflow-y: auto;
+      max-height: calc(70vh - 80px);
+      padding: 0.5rem;
+    }
+
+    /* Esconder sugestões antigas inline */
+    #citySuggestions {
+      display: none !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .suggestions.active {
+      display: block;
+    }
+
+    .suggestion-item {
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 1px solid rgba(0, 255, 0, 0.1);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #000000;
+      color: #ffffff;
+    }
+
+    .suggestion-item:hover {
+      background: linear-gradient(90deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0.1) 100%);
+      padding-left: 2rem;
+      color: #FFD700;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+      border-radius: 0 0 13px 13px;
+    }
+
+    .suggestion-item .mdi {
+      color: #00FF00;
+    }
+
+    .suggestion-item:hover .mdi {
+      color: #FFD700;
+    }
+
+    .event-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .event-type-btn {
+      padding: 0.8rem;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(0, 255, 0, 0.3);
+      border-radius: 8px;
+      color: #00FF00;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .event-type-btn:hover {
+      background: rgba(255, 215, 0, 0.1);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+      border-color: #FFD700;
+      color: #FFD700;
+    }
+
+    .event-type-btn.selected {
+      background: rgba(255, 215, 0, 0.2);
+      border-color: #FFD700;
+      color: #FFD700;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 1.4rem;
+      background: linear-gradient(135deg, #FFD700, #00FF00);
+      border: none;
+      border-radius: 15px;
+      color: #000000;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 2rem;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .submit-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .submit-button:hover::before {
+      left: 100%;
+    }
+
+    .submit-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(255, 215, 0, 0.5);
+      background: linear-gradient(135deg, #00FF00, #FFD700);
+    }
+
+    .submit-button:active {
+      transform: translateY(0);
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .loading.active {
+      display: block;
+    }
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(0, 255, 0, 0.2);
+      border-top-color: #FFD700;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .footer {
+      background: rgba(0, 0, 0, 0.95);
+      padding: 1.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(0, 255, 0, 0.3);
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer p {
+      color: #FFD700;
+      font-size: 0.9rem;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+
+    /* Scrollbar customization */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #FFD700, #00FF00);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #00FF00, #FFD700);
+    }
+
+    /* Tablet responsiveness */
+    @media (max-width: 1024px) {
+      .search-wrapper {
+        max-width: 90%;
+      }
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .header {
+        padding: 1rem;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .logo-container img {
+        height: 100px;
+      }
+
+      .nav-links {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .nav-links a {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+      }
+
+      .main-container {
+        padding: 1rem;
+      }
+
+      .search-card {
+        padding: 1.5rem;
+        border-radius: 15px;
+      }
+
+      .search-title h2 {
+        font-size: 1.5rem;
+      }
+
+      .form-group label {
+        font-size: 0.8rem;
+      }
+
+      .input-wrapper input {
+        padding: 1rem 1.2rem;
+        font-size: 1rem;
+      }
+
+      .cep-search {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+
+      .cep-button {
+        width: 100%;
+      }
+
+      .event-types {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+      }
+
+      .event-type-btn {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+      }
+
+      .submit-button {
+        padding: 1.2rem;
+        font-size: 1rem;
+      }
+    }
+
+    /* Small mobile responsiveness */
+    @media (max-width: 480px) {
+      .logo-container img {
+        height: 80px;
+      }
+
+      .search-title h2 {
+        font-size: 1.3rem;
+      }
+
+      .search-title p {
+        font-size: 0.85rem;
+      }
+
+      .event-types {
+        grid-template-columns: 1fr;
+      }
+
+      .footer p {
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Música de fundo -->
+  <audio id="bgMusic" loop>
+    <source src="/fundo" type="audio/mpeg">
+    Seu navegador não suporta o elemento de áudio.
+  </audio>
+  <header class="header">
+    <div class="header-content">
+      <nav class="nav-links">
+        <a href="/"><i class="mdi mdi-magnify"></i> Buscar</a>
+        <a href="/favoritos"><i class="mdi mdi-star"></i> Favoritos</a>
+        <a href="/sobre"><i class="mdi mdi-information-outline"></i> Sobre</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="search-wrapper">
+      <div class="logo-container">
+        <img src="/logo" alt="QQFrevo Logo">
+      </div>
+
+      <div class="search-card">
+        <div class="search-title">
+          <h2>Descubra Eventos Incríveis</h2>
+          <p>Encontre os melhores eventos do Instagram na sua região</p>
+        </div>
+
+        <form id="searchForm" method="POST" action="/buscar">
+          <div class="form-group">
+            <label for="cep">
+              <i class="mdi mdi-map-marker"></i>
+              CEP (Opcional)
+            </label>
+            <div class="cep-search">
+              <div class="cep-input">
+                <div class="input-wrapper">
+                  <input 
+                    type="text" 
+                    id="cep" 
+                    name="cep" 
+                    placeholder="00000-000"
+                    maxlength="9"
+                  >
+                </div>
+              </div>
+              <button type="button" class="cep-button" onclick="buscarCEP()">
+                <i class="mdi mdi-map-search"></i>
+                Buscar CEP
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cidade">
+              <i class="mdi mdi-city"></i>
+              Cidade *
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="text" 
+                id="cidade" 
+                name="cidade" 
+                placeholder="Digite o nome da cidade..."
+                required
+                autocomplete="off"
+              >
+              <div id="citySuggestions" class="suggestions"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="tipo">
+              <i class="mdi mdi-music-note"></i>
+              Tipo de Evento *
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="text" 
+                id="tipo" 
+                name="tipo" 
+                placeholder="Ex: baile funk, festa, show..."
+                required
+              >
+            </div>
+            <div class="event-types">
+              <div class="event-type-btn" onclick="selectEventType('baile funk')">Baile Funk</div>
+              <div class="event-type-btn" onclick="selectEventType('festa')">Festa</div>
+              <div class="event-type-btn" onclick="selectEventType('show')">Show</div>
+              <div class="event-type-btn" onclick="selectEventType('pagode')">Pagode</div>
+              <div class="event-type-btn" onclick="selectEventType('samba')">Samba</div>
+              <div class="event-type-btn" onclick="selectEventType('forró')">Forró</div>
+              <div class="event-type-btn" onclick="selectEventType('sertanejo')">Sertanejo</div>
+              <div class="event-type-btn" onclick="selectEventType('som automotivo')">Som Automotivo</div>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-button">
+            <i class="mdi mdi-magnify"></i>
+            Buscar Eventos
+          </button>
+
+          <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="color: #FFD700; margin-top: 0.5rem;">Buscando eventos...</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>QQFrevo - Buscador de Eventos</p>
+  </footer>
+
+  <!-- Modal de Sugestões de Cidade -->
+  <div id="cityModal" class="modal-overlay">
+    <div class="suggestions-modal">
+      <div class="modal-header">
+        <h3><i class="mdi mdi-city"></i> Selecione sua Cidade</h3>
+        <button class="close-modal" onclick="closeCityModal()">
+          <i class="mdi mdi-close"></i>
+        </button>
+      </div>
+      <div id="modalSuggestions" class="suggestions"></div>
+    </div>
+  </div>
+
+  <!-- Controle de música -->
+  <div class="music-control">
+    <button id="playPauseBtn" title="Play/Pause">
+      <i class="mdi mdi-pause"></i>
+    </button>
+    <i class="mdi mdi-volume-high" style="color: #00FF00;"></i>
+    <input type="range" id="volumeControl" min="0" max="100" value="30">
+    <span class="volume-label" id="volumeLabel">30%</span>
+  </div>
+
+  <script>
+    // Sistema de música persistente
+    document.addEventListener('DOMContentLoaded', function() {
+      const bgMusic = document.getElementById('bgMusic');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const volumeControl = document.getElementById('volumeControl');
+      const volumeLabel = document.getElementById('volumeLabel');
+      
+      if (bgMusic) {
+        // Recuperar estado salvo do localStorage
+        const savedState = localStorage.getItem('musicPlayerState');
+        const state = savedState ? JSON.parse(savedState) : {
+          playing: true,
+          volume: 30,
+          currentTime: 0
+        };
+        
+        // Aplicar estado salvo
+        bgMusic.volume = state.volume / 100;
+        volumeControl.value = state.volume;
+        volumeLabel.textContent = state.volume + '%';
+        
+        // Tentar restaurar posição da música
+        if (state.currentTime > 0) {
+          bgMusic.currentTime = state.currentTime;
+        }
+        
+        // Função para salvar estado
+        function saveState() {
+          const currentState = {
+            playing: !bgMusic.paused,
+            volume: Math.round(bgMusic.volume * 100),
+            currentTime: bgMusic.currentTime
+          };
+          localStorage.setItem('musicPlayerState', JSON.stringify(currentState));
+        }
+        
+        // Função para atualizar ícone do botão
+        function updateButtonIcon() {
+          if (bgMusic.paused) {
+            playPauseBtn.innerHTML = '<i class="mdi mdi-play"></i>';
+          } else {
+            playPauseBtn.innerHTML = '<i class="mdi mdi-pause"></i>';
+          }
+        }
+        
+        // Iniciar música apenas se estava tocando antes
+        if (state.playing) {
+          const playPromise = bgMusic.play();
+          
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              updateButtonIcon();
+            }).catch(() => {
+              // Se autoplay falhar, esperar interação
+              document.addEventListener('click', function() {
+                if (state.playing && bgMusic.paused) {
+                  bgMusic.play().then(() => {
+                    updateButtonIcon();
+                    saveState();
+                  });
+                }
+              }, { once: true });
+            });
+          }
+        } else {
+          updateButtonIcon();
+        }
+        
+        // Controle de Play/Pause
+        playPauseBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          
+          if (bgMusic.paused) {
+            bgMusic.play().then(() => {
+              updateButtonIcon();
+              saveState();
+            });
+          } else {
+            bgMusic.pause();
+            updateButtonIcon();
+            saveState();
+          }
+        });
+        
+        // Controle de Volume
+        volumeControl.addEventListener('input', function() {
+          const volume = this.value / 100;
+          bgMusic.volume = volume;
+          volumeLabel.textContent = this.value + '%';
+          saveState();
+          
+          // Atualizar ícone de volume
+          const volumeIcon = document.querySelector('.music-control .mdi-volume-high, .music-control .mdi-volume-medium, .music-control .mdi-volume-low, .music-control .mdi-volume-off');
+          if (volumeIcon) {
+            volumeIcon.className = 'mdi ' + (
+              volume === 0 ? 'mdi-volume-off' :
+              volume < 0.3 ? 'mdi-volume-low' :
+              volume < 0.7 ? 'mdi-volume-medium' :
+              'mdi-volume-high'
+            );
+          }
+        });
+        
+        // Salvar estado periodicamente (a cada segundo)
+        setInterval(saveState, 1000);
+        
+        // Salvar estado quando a música pausar ou tocar
+        bgMusic.addEventListener('play', () => {
+          updateButtonIcon();
+          saveState();
+        });
+        
+        bgMusic.addEventListener('pause', () => {
+          updateButtonIcon();
+          saveState();
+        });
+        
+        // Salvar estado antes de sair da página
+        window.addEventListener('beforeunload', saveState);
+      }
+    });
+
+    // Lista de cidades brasileiras principais
+    const cidadesBrasileiras = [
+      'São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Brasília', 'Salvador',
+      'Fortaleza', 'Curitiba', 'Recife', 'Porto Alegre', 'Manaus',
+      'Belém', 'Goiânia', 'Guarulhos', 'Campinas', 'São Luís',
+      'São Gonçalo', 'Maceió', 'Duque de Caxias', 'Natal', 'Campo Grande',
+      'Teresina', 'São Bernardo do Campo', 'João Pessoa', 'Santo André',
+      'Osasco', 'São José dos Campos', 'Jaboatão dos Guararapes', 'Ribeirão Preto',
+      'Uberlândia', 'Contagem', 'Sorocaba', 'Aracaju', 'Feira de Santana',
+      'Cuiabá', 'Joinville', 'Juiz de Fora', 'Londrina', 'Aparecida de Goiânia',
+      'Niterói', 'Porto Velho', 'Campos dos Goytacazes', 'Ananindeua', 'Serra',
+      'Caxias do Sul', 'Macapá', 'Vila Velha', 'Florianópolis', 'São João de Meriti',
+      'Mauá', 'São José do Rio Preto', 'Santos', 'Mogi das Cruzes', 'Betim',
+      'Diadema', 'Maringá', 'Jundiaí', 'Montes Claros', 'Piracicaba',
+      'Carapicuíba', 'Olinda', 'Cariacica', 'Bauru', 'Rio Branco',
+      'Anápolis', 'São Vicente', 'Vitória', 'Caucaia', 'Itaquaquecetuba',
+      'Caruaru', 'Pelotas', 'Canoas', 'Franca', 'Ponta Grossa',
+      'Blumenau', 'Suzano', 'Ribeirão das Neves', 'Uberaba', 'Paulista',
+      'Cascavel', 'Guarujá', 'Praia Grande', 'Taubaté', 'Petrópolis',
+      'Limeira', 'Santarém', 'Camaçari', 'Palmas', 'Mossoró',
+      'Volta Redonda', 'Indaiatuba', 'Novo Hamburgo', 'Itaboraí', 'Foz do Iguaçu',
+      'Magé', 'Gravataí', 'Viamão', 'Ipatinga', 'São Carlos',
+      'Cotia', 'Embu das Artes', 'Taboão da Serra', 'Várzea Grande', 'Sumaré'
+    ].sort();
+
+    // Formatação automática do CEP
+    document.getElementById('cep').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 5) {
+        value = value.slice(0, 5) + '-' + value.slice(5, 8);
+      }
+      e.target.value = value;
+    });
+
+    // Buscar CEP na API ViaCEP
+    async function buscarCEP() {
+      const cep = document.getElementById('cep').value.replace(/\D/g, '');
+      
+      if (cep.length !== 8) {
+        alert('Por favor, digite um CEP válido');
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+        
+        if (data.erro) {
+          alert('CEP não encontrado');
+          return;
+        }
+        
+        document.getElementById('cidade').value = data.localidade;
+        
+        // Adicionar estado para melhorar a busca
+        if (data.uf) {
+          document.getElementById('cidade').value += ', ' + data.uf;
+        }
+        
+        // Feedback visual
+        document.getElementById('cidade').style.borderColor = '#FFD700';
+        setTimeout(() => {
+          document.getElementById('cidade').style.borderColor = '';
+        }, 2000);
+        
+      } catch (error) {
+        alert('Erro ao buscar CEP. Tente novamente.');
+      }
+    }
+
+    // Autocompletar cidades com Modal
+    const cidadeInput = document.getElementById('cidade');
+    const cityModal = document.getElementById('cityModal');
+    const modalSuggestions = document.getElementById('modalSuggestions');
+    let searchValue = '';
+
+    // Abrir modal ao digitar
+    cidadeInput.addEventListener('input', function(e) {
+      searchValue = e.target.value.toLowerCase();
+      
+      if (searchValue.length < 2) {
+        closeCityModal();
+        return;
+      }
+      
+      const filteredCities = cidadesBrasileiras.filter(city => 
+        city.toLowerCase().includes(searchValue)
+      );
+      
+      if (filteredCities.length > 0) {
+        // Mostrar todas as cidades que correspondem (até 20)
+        modalSuggestions.innerHTML = filteredCities.slice(0, 20)
+          .map(city => `
+            <div class="suggestion-item" onclick="selectCity('${city}')">
+              <i class="mdi mdi-map-marker"></i>
+              ${city}
+            </div>
+          `)
+          .join('');
+        
+        // Abrir modal
+        openCityModal();
+      } else {
+        // Se não houver resultados, mostrar mensagem
+        modalSuggestions.innerHTML = `
+          <div class="suggestion-item" style="cursor: default; opacity: 0.7;">
+            <i class="mdi mdi-alert-circle"></i>
+            Nenhuma cidade encontrada
+          </div>
+        `;
+        openCityModal();
+      }
+    });
+
+    // Função para abrir o modal
+    function openCityModal() {
+      cityModal.classList.add('active');
+      document.body.style.overflow = 'hidden'; // Prevenir scroll da página
+    }
+
+    // Função para fechar o modal
+    function closeCityModal() {
+      cityModal.classList.remove('active');
+      document.body.style.overflow = ''; // Restaurar scroll
+    }
+
+    // Selecionar cidade da sugestão
+    function selectCity(city) {
+      cidadeInput.value = city;
+      closeCityModal();
+      // Focar no próximo campo
+      document.getElementById('tipo').focus();
+    }
+
+    // Fechar modal ao clicar no overlay
+    cityModal.addEventListener('click', function(e) {
+      if (e.target === cityModal) {
+        closeCityModal();
+      }
+    });
+
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && cityModal.classList.contains('active')) {
+        closeCityModal();
+      }
+    });
+
+    // Prevenir submit do formulário ao pressionar Enter no campo cidade
+    cidadeInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && cityModal.classList.contains('active')) {
+        e.preventDefault();
+        // Selecionar primeira cidade da lista se houver
+        const firstCity = modalSuggestions.querySelector('.suggestion-item');
+        if (firstCity && firstCity.onclick) {
+          firstCity.click();
+        }
+      }
+    });
+
+    // Selecionar tipo de evento
+    function selectEventType(type) {
+      document.getElementById('tipo').value = type;
+      
+      // Visual feedback
+      document.querySelectorAll('.event-type-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        if (btn.textContent === type || btn.textContent.toLowerCase() === type.toLowerCase()) {
+          btn.classList.add('selected');
+        }
+      });
+    }
+
+    // Mostrar loading ao enviar formulário
+    document.getElementById('searchForm').addEventListener('submit', function() {
+      document.getElementById('loading').classList.add('active');
+    });
+
+    // Adicionar efeito de partículas no background com variações
+    function createParticle() {
+      const particle = document.createElement('div');
+      const size = Math.random() * 3 + 1;
+      const startX = Math.random() * window.innerWidth;
+      
+      particle.style.position = 'fixed';
+      particle.style.width = size + 'px';
+      particle.style.height = size + 'px';
+      const colors = ['rgba(255, 215, 0,', 'rgba(0, 255, 0,'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.background = `${color} ${Math.random() * 0.5 + 0.3})`;
+      particle.style.pointerEvents = 'none';
+      particle.style.borderRadius = '50%';
+      particle.style.left = startX + 'px';
+      particle.style.top = window.innerHeight + 'px';
+      particle.style.filter = 'blur(1px)';
+      particle.style.boxShadow = `0 0 10px ${color} 0.5)`;
+      document.body.appendChild(particle);
+      
+      const duration = Math.random() * 4 + 3;
+      particle.style.animation = `float ${duration}s linear, twinkle ${Math.random() * 2 + 1}s ease-in-out infinite`;
+      
+      setTimeout(() => particle.remove(), duration * 1000);
+    }
+
+    // Criar partículas periodicamente com intervalos variados
+    function startParticles() {
+      createParticle();
+      setTimeout(startParticles, Math.random() * 500 + 200);
+    }
+    startParticles();
+
+    // CSS para animações das partículas
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes float {
+        to {
+          transform: translateY(-${window.innerHeight + 100}px) translateX(${(Math.random() - 0.5) * 200}px);
+          opacity: 0;
+        }
+      }
+      @keyframes twinkle {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Adicionar animação de entrada para elementos
+    document.addEventListener('DOMContentLoaded', function() {
+      const elements = document.querySelectorAll('.form-group');
+      elements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          el.style.transition = 'all 0.5s ease-out';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, index * 100 + 500);
+      });
+    });
+  </script>
+</body>
+</html>
