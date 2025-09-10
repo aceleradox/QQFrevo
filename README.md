@@ -164,10 +164,11 @@ Nenhuma breaking change. Todas as funcionalidades existentes foram mantidas e ap
 ---
 
 ### Autor das Melhorias
-Victor (@victor)
+Victor (@Captando)
 
 ### Data
 2025-09-10
 
 ### Agradecimentos
+
 Obrigado pelo código base! Foi um prazer implementar essas melhorias no QQFrevo. 🎉
