@@ -1,0 +1,186 @@
+# 🎉 QQFrevo - Buscador de Eventos no Instagram
+
+Sistema inteligente para descobrir eventos e festas na sua cidade através do Instagram.
+
+## 📋 Sobre o Sistema
+
+O QQFrevo é uma ferramenta especializada em encontrar perfis, páginas e conteúdos relacionados a eventos no Instagram, incluindo:
+- Bailes funk e desandes
+- Som automotivo e paredões
+- Festas e baladas
+- Shows e eventos culturais
+- Qualquer tipo de evento social
+
+### Recursos Principais
+- **Busca Inteligente**: Pesquisa eventos por tipo e cidade
+- **Detecção de Conteúdo**: Identifica automaticamente se é um perfil, post, reel ou story
+- **Sistema de Favoritos**: Salve seus eventos preferidos em banco de dados
+- **Busca por CEP**: Integração com ViaCEP para preenchimento automático
+- **Autocomplete de Cidades**: Sugestões de cidades brasileiras
+- **Interface Moderna**: Design dark mode com animações e glassmorphism
+- **Player de Música**: Música ambiente com controles persistentes
+
+## 🚀 Inicialização Rápida
+
+### Método Automático (Recomendado)
+
+#### Windows
+```bash
+# Dê duplo clique no arquivo:
+iniciar-qqfrevo.bat
+```
+
+#### Linux/Mac
+```bash
+# Execute no terminal:
+./iniciar-qqfrevo.sh
+```
+
+O script automático irá:
+- Verificar se o Node.js está instalado
+- Instalar dependências automaticamente
+- Iniciar o servidor
+- Abrir o navegador em http://localhost:3000
+
+## 💻 Instalação Manual
+
+### Pré-requisitos
+- **Node.js** v12.0.0 ou superior
+- **npm** v6.0.0 ou superior
+
+### Passo a Passo
+
+1. **Clone ou baixe o projeto**
+```bash
+git clone [url-do-repositorio]
+cd aceleadox
+```
+
+2. **Navegue até a pasta do servidor**
+```bash
+cd "QQFrevo XPS server"
+```
+
+3. **Instale as dependências**
+```bash
+npm install
+```
+
+4. **Inicie o servidor**
+```bash
+node qqfrevo.js
+```
+
+5. **Acesse no navegador**
+```
+http://localhost:3000
+```
+
+## 📦 Dependências do Projeto
+
+- **express**: Framework web para Node.js
+- **body-parser**: Parser de requisições HTTP
+- **axios**: Cliente HTTP para requisições
+- **cheerio**: Web scraping server-side
+- **sqlite3**: Banco de dados SQLite
+
+## 🎮 Como Usar
+
+### Buscar Eventos
+1. Digite o tipo de evento (ex: "baile funk", "som automotivo")
+2. Digite a cidade ou use o CEP para preenchimento automático
+3. Clique em "Buscar Eventos"
+4. Visualize os resultados encontrados
+
+### Favoritar Links
+- Clique no botão "Favoritar" em qualquer resultado
+- Acesse seus favoritos pelo menu "Meus Favoritos"
+- Gerencie seus favoritos salvos no banco de dados
+
+### Busca por CEP
+1. Digite o CEP no formato 00000-000
+2. Clique em "Buscar CEP"
+3. A cidade será preenchida automaticamente
+
+### Player de Música
+- Controle play/pause no canto inferior direito
+- Ajuste o volume com o slider
+- O estado é mantido entre páginas
+
+## 🗂️ Estrutura do Projeto
+
+```
+QQFrevo XPS server/
+├── qqfrevo.js           # Servidor principal
+├── views/
+│   ├── index.html       # Interface principal
+│   ├── logo.png         # Logo do QQFrevo
+│   └── fundo.mp3        # Música de fundo
+├── favoritos.db         # Banco de dados SQLite
+├── package.json         # Configuração npm
+└── node_modules/        # Dependências instaladas
+```
+
+## 🔧 Configurações
+
+### Mudar a Porta
+Por padrão o servidor roda na porta 3000. Para mudar, edite o arquivo `qqfrevo.js`:
+```javascript
+const PORT = 3000; // Mude para a porta desejada
+```
+
+### Personalizar Interface
+A interface pode ser customizada editando o arquivo `views/index.html`
+
+## 🐛 Solução de Problemas
+
+### Erro: "Node.js não está instalado"
+- Baixe e instale em: https://nodejs.org
+
+### Erro: "Porta 3000 já está em uso"
+- O script oferece opção de encerrar o processo
+- Ou mude a porta no arquivo qqfrevo.js
+
+### Erro: "Cannot find module"
+```bash
+npm install
+```
+
+### Música não toca automaticamente
+- Navegadores modernos bloqueiam autoplay
+- Clique em qualquer lugar da página para ativar
+
+## 📱 Acesso Remoto
+
+Para acessar de outros dispositivos na mesma rede:
+1. Descubra seu IP local: `ipconfig` (Windows) ou `ifconfig` (Linux/Mac)
+2. Acesse: `http://[seu-ip]:3000`
+
+## 🔒 Segurança
+
+- O sistema não armazena senhas ou dados sensíveis
+- Busca apenas informações públicas do Instagram
+- Banco de dados local (não compartilhado)
+
+## 📄 Licença
+
+Projeto de código aberto para fins educacionais.
+
+## 💡 Dicas
+
+- Use termos específicos para melhores resultados
+- Combine múltiplas palavras-chave
+- Experimente variações de nomes de eventos
+- Favorite os melhores perfis para acesso rápido
+- O player de música mantém o estado entre páginas
+
+## 🆘 Suporte
+
+Em caso de problemas ou dúvidas:
+1. Verifique este manual
+2. Reinicie o servidor
+3. Reinstale as dependências com `npm install`
+
+---
+
+**QQFrevo** - Encontre os melhores eventos da sua cidade! 🎉
