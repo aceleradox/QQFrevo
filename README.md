@@ -1,7 +1,7 @@
 # versao atualizada do QQfrevo
-## qqfrevo NV15A E UMA VERSAO ATUALIZADA DO QQFREVO QUE PESQUISA NUITO ALEM DO INSTAGRAM. AGORA TAMBEM PESQUISA EM OUTRAS PLATAFORMA
+## QQfrevo NV15A E UMA VERSAO ATUALIZADA DO QQFREVO QUE PESQUISA NUITO ALEM DO INSTAGRAM. AGORA TAMBEM PESQUISA EM OUTRAS PLATAFORMA
 ## https://github.com/aceleradox/QQFrevo-n15a 
-# --------------------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------
 Descrição:
 QQFrevo é uma coleção de aplicativos Node.js para pesquisa de perfis e eventos de música no Instagram, como frevo, baile funk, desande, eletrofunk e outros. Cada versão vem em ZIP e inclui todos os arquivos e pastas necessários para rodar de forma independente: qqfrevo.js, mods, public, banco de dados SQLite e arquivo de configuração config.json. Existem várias versões, como Progressive Autonomy, QQFrevo XPS e outras, mas todas seguem a mesma estrutura e lógica de funcionamento.
 
