@@ -1,5 +1,5 @@
-#versao atualizada do QQfrevo
-## qqfrevo NV15A
+# versao atualizada do QQfrevo
+## qqfrevo NV15A E UMA VERSAO ATUALIZADA DO QQFREVO QUE PESQUISA NUITO ALEM DO INSTAGRAM. AGORA TAMBEM PESQUISA EM OUTRAS PLATAFORMA
 ## >>>>>>>>>>>>> https://github.com/aceleradox/QQFrevo-n15a <<<<<<<<<<<<<<<<<<<<<<<<<
 
 Descrição:
