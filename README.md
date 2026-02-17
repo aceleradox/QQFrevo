@@ -9,7 +9,8 @@ so digite no cmd: npm install electron
 ## Versao modificavel do qqfrevo.
 # qqfrevo PA Ace Neon:
 https://github.com/aceleradox/QQFrevo/raw/refs/heads/main/QQfrevo%20Progressive%20Autonomy%20ACE-NEON.zip
-Descrição:
+
+# Descrição:
 QQFrevo é uma coleção de aplicativos Node.js para pesquisa de perfis e eventos de música no Instagram, como frevo, baile funk, desande, eletrofunk e outros. Cada versão vem em ZIP e inclui todos os arquivos e pastas necessários para rodar de forma independente: qqfrevo.js, mods, public, banco de dados SQLite e arquivo de configuração config.json. Existem várias versões, como Progressive Autonomy, QQFrevo XPS e outras, mas todas seguem a mesma estrutura e lógica de funcionamento.
 
 Pré-requisitos:
