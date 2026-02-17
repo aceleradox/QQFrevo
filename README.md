@@ -1,5 +1,5 @@
 # versao atualizada do QQfrevo
-## agora existe uma versao Gui para rodar os app QQfrevo.
+## agora existe uma addon para rodar o QQfrevo em modo janela - Gui para rodar os app QQfrevo.
 https://github.com/aceleradox/QQFrevo/raw/refs/heads/main/QQfrevo%20Gui%20Addon.rar
 # precisaria ter o  electron.
 so digite no cmd: npm install electron
