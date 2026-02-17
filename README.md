@@ -7,7 +7,7 @@ so digite no cmd: npm install electron
 ## https://github.com/aceleradox/QQFrevo-n15a 
 # essa versao e baseada no QQfrevo autonomy
 ## Versao modificavel do qqfrevo.
-# qqfrevo PA Ace Neon:
+# qqfrevo PA Ace Neon(Versao Modificavel):
 https://github.com/aceleradox/QQFrevo/raw/refs/heads/main/QQfrevo%20Progressive%20Autonomy%20ACE-NEON.zip
 
 # Descrição:
