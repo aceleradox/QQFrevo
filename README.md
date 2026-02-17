@@ -1,4 +1,8 @@
 # versao atualizada do QQfrevo
+## agora existe uma versao Gui para rodar os app QQfrevo.
+https://github.com/aceleradox/QQFrevo/raw/refs/heads/main/QQfrevo%20Gui%20Addon.rar
+# precisaria ter o  electron.
+so digite no cmd: npm install electron
 ## QQfrevo NV15A E UMA VERSAO ATUALIZADA DO QQFREVO QUE PESQUISA NUITO ALEM DO INSTAGRAM. AGORA TAMBEM PESQUISA EM OUTRAS PLATAFORMA
 ## https://github.com/aceleradox/QQFrevo-n15a 
 # essa versao e baseada no QQfrevo autonomy
